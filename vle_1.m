@@ -6,8 +6,11 @@ function vle_1
     P_benzCl= @(T, x) P_benzCl_s(T).*(1-x); % парциальное давление хлорбензола в системе x - мольная доля бензола
     y = @(T, x) P_benz(T, x)./(P_benz(T,x)+P_benzCl(T,x)); % состав пара при  x бензола
     P= @(T, x) P_benz(T, x)+P_benzCl(T,x); % общее давление в системе
+    figure;
     plot(t, P(350, t.'), y(350, t.'), P(350, t.')); %pxy диаграмма при t= 350 К
     x0=t.*0+500; %вектор начальных значений температуры
     T_plot= @(x) fsolve( @(T) P(T, x)-1, x0.'); %функция расчета температуры при p=1 бар
-    plot(t, T_plot(t.'), y(T_plot(t.'), t.'), T_plot(t.')); %txy диаграмма при p=1 бан
+    Y = T_plot(t.');
+    figure;
+    plot(t, Y, y(Y, t.'), Y); %txy диаграмма при p=1 бан
 end
