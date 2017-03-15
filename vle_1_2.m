@@ -10,11 +10,12 @@ function vle_1_2
     P_methethket= @(T, x) P_methethket_s(T).*a_methethket(T,x); % парциальное давление хлорбензола в системе x - мольная доля циклогексана
     y = @(T, x) P_chexane(T, x)./(P_chexane(T,x)+P_methethket(T,x)); % состав пара при  x циклогексана
     P= @(T, x) P_chexane(T, x)+P_methethket(T,x); % общее давление в системе
-    figure;
-    plot(t, P(350, t.'), y(350, t.'), P(350, t.')); %pxy диаграмма при t= 350 К
+    %figure;
+    %plot(t, P(350, t.'), y(350, t.'), P(350, t.')); %pxy диаграмма при t= 350 К
     x0=t.*0+500; %вектор начальных значений температуры
     T_plot= @(x) fsolve( @(T) P(T, x)-1, x0.'); %функция расчета температуры при p=1 бар
     Y = T_plot(t.');
-    figure;
-    plot(t, Y, y(Y, t.'), Y); %txy диаграмма при p=1 бан
+    y(350, 0.8)
+    %figure;
+    %plot(t, Y, y(Y, t.'), Y); %txy диаграмма при p=1 бан
 end
