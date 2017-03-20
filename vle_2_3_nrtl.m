@@ -26,8 +26,8 @@ function  vle_2_3
     opt = optimoptions('lsqnonlin', 'Display', 'iter-detailed', 'MaxFunctionEvaluations', 5000, 'MaxIterations', 5000);
     ln_Ga= @(x, g00)  x.^2.*(g00(3).*(G_ba(g00)./(1-x+x.*G_ba(g00))).^2+g00(2).*G_ab(g00)./(x+(1-x).*G_ab(g00)).^2);
     ln_Gb = @(x, g00) (1-x).^2.*(g00(2).*(G_ab(g00)./(1-x+x.*G_ab(g00))).^2+g00(3).*G_ba(g00)./(1-x+x.*G_ba(g00)).^2);
-    a_propanol = @(g00, x) exp(ln_Ga(x, g00)).*x; 
-    a_water= @(g00, x) exp(ln_Gb(x, g00)).*(1-x);
+    a_propanol = @(g00, x) exp(ln_Gb(x, g00)).*x; 
+    a_water= @(g00, x) exp(ln_Ga(x, g00)).*(1-x);
     P_propanol= @ (g00, x) P_s_propanol.*a_propanol( g00, x); 
     P_water= @(g00, x) P_s_water.*a_water(g00,x);
     y = @(g00, x) P_propanol(g00, x)./(P_propanol(g00,x)+P_water(g00,x)); 
