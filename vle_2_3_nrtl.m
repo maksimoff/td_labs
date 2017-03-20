@@ -34,7 +34,9 @@ function  vle_2_3
     P= @(g00, x) P_propanol(g00,x)+P_water(g00,x);
     Fun = @(g00) P_propanol(g00, X_exp)-P_propanol_exp;
     P_exp = @(g00, x) P_propanol_exp+P_water(g00, x);
-    g00_calc = lsqnonlin(Fun, [1; 1E-8; 1E-8],[], [], opt);
+    [g00_calc, ~,resid,~,~,~,J] = lsqnonlin( Fun, [0.4;2;-0.8],[], [], opt);
+    ci = nlparci(g00_calc,resid,'jacobian',J)
+    g00_calc
     t=[0:0.01:1];
     plot(t.', P_propanol(g00_calc, t.'),'-b', X_exp, P_propanol_exp, '+k'); 
 end
