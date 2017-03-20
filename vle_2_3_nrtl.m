@@ -20,18 +20,22 @@ function  vle_2_3
 108.5;
 93.3;
 58.0;];
-
     P_propanol_exp= P_propanol_exp.*1.3332E-3;
-    a_propanol = @(g00, x) exp((1-x).^2.*g00./R./T).*x; 
-    a_water= @(g00, x) exp(x.^2.*g00./R./T).*(1-x);
+    G_ba= @(g00) exp(-g00(1)*g00(3));
+    G_ab= @(g00) exp(-g00(1)*g00(2));
+    opt = optimoptions('lsqnonlin', 'Display', 'iter-detailed', 'MaxFunctionEvaluations', 5000, 'MaxIterations', 5000);
+    ln_Ga= @(x, g00)  x.^2.*(g00(3).*(G_ba(g00)./(1-x+x.*G_ba(g00))).^2+g00(2).*G_ab(g00)./(x+(1-x).*G_ab(g00)).^2);
+    ln_Gb = @(x, g00) (1-x).^2.*(g00(2).*(G_ab(g00)./(1-x+x.*G_ab(g00))).^2+g00(3).*G_ba(g00)./(1-x+x.*G_ba(g00)).^2);
+    a_propanol = @(g00, x) exp(ln_Ga(x, g00)).*x; 
+    a_water= @(g00, x) exp(ln_Gb(x, g00)).*(1-x);
     P_propanol= @ (g00, x) P_s_propanol.*a_propanol( g00, x); 
     P_water= @(g00, x) P_s_water.*a_water(g00,x);
     y = @(g00, x) P_propanol(g00, x)./(P_propanol(g00,x)+P_water(g00,x)); 
     P= @(g00, x) P_propanol(g00,x)+P_water(g00,x);
     Fun = @(g00) P_propanol(g00, X_exp)-P_propanol_exp;
     P_exp = @(g00, x) P_propanol_exp+P_water(g00, x);
-    g00_calc = lsqnonlin(Fun, 5000);
+    g00_calc = lsqnonlin(Fun, [1; 1E-8; 1E-8],[], [], opt);
     t=[0:0.01:1];
-    plot(t.', P_propanol(g00_calc, t.'), '-b',  X_exp, P_propanol_exp, '+k');
+    plot(t.', P_propanol(g00_calc, t.'),'-b', X_exp, P_propanol_exp, '+k'); 
 end
 
